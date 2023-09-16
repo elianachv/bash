@@ -10,7 +10,9 @@ installPostgressUbuntu () {
     if [ $? -eq 0 ]; then
         echo -e "\n Postgres have been already installed"
     else
+        echo -e "\n"
         read -s -p "Digit sudo password: " password
+        echo -e "\n"
         read -s -p "Digit postgres password: " passwordPostgres
         echo "$password" | sudo -S apt update
         echo "$password" | sudo -S apt-get -y install postgresql postgresql-contrib
@@ -22,6 +24,7 @@ installPostgressUbuntu () {
 }
 
 uninstallPostgressUbuntu () {
+    echo -e "\n"
     read -s -p "Digit sudo password: " password
     echo -e "\n"
     echo "$password" | sudo -S systemctl stop postgresql.service
@@ -85,7 +88,7 @@ do
             sleep 3
             ;;
          5)
-            finishProgram
+            exitProgram
             ;;
          *) 
             echo -e "\nError"

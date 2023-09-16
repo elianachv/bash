@@ -10,7 +10,9 @@ installPostgressAmazonLinux () {
     if [ $? -eq 0 ]; then
         echo -e "\n Postgres have been already installed"
     else
+        echo -e ""
         read -s -p "Digit sudo password: " password
+        echo -e ""
         read -s -p "Digit postgres password: " passwordPostgres
         echo "$password" | sudo -S yum update
         echo "$password" | sudo -S yum -y install postgresql15-server
@@ -23,10 +25,12 @@ installPostgressAmazonLinux () {
 }
 
 uninstallPostgressAmazonLinux () {
+    echo -e ""
     read -s -p "Digit sudo password: " password
     echo -e "\n"
     echo "$password" | sudo -S systemctl stop postgresql.service
     echo "$password" | sudo -S yum -y remove postgresql\*
+    echo "$password" | sudo -S rm -r /var/lib/pgsql
     read -n 1 -s -r -p "PRESS [ENTER] to continue..."
 }
 
@@ -81,7 +85,7 @@ do
             sleep 3
             ;;
          5)
-            finishProgram
+            exitProgram
             ;;
          *) 
             echo -e "\nError"
