@@ -1,0 +1,5 @@
+Some text to read
+I'm Eli
+I like bash programming
+I'm taking a platzi course
+I'm doing the exercises
