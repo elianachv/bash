@@ -63,8 +63,7 @@ restoreBackup () {
     read -p "Which backup do you want to restore? " restoreBackup
     read -p "In which database do you want to restore the backup? " db
     
-    if [ -f $restoreBackup ]; then
-    else
+    if ![[ -f $restoreBackup ]]; then
         echo -e "\nBackup $restoreBackup does not exist"
         return
     fi
