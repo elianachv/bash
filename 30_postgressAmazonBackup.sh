@@ -23,9 +23,10 @@ installPostgressAmazonLinux () {
         echo "$password" | sudo -S yum update
         echo "$password" | sudo -S yum -y install postgresql15-server
         sudo postgresql-setup --initdb
+        sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '{$passwordPostgres}';"
         echo "$password" | sudo -S systemctl enable postgresql.service
         echo "$password" | sudo -S systemctl start postgresql.service
-        sudo psql -c "ALTER USER postgres WITH PASSWORD '{$passwordPostgres}';"
+        sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '{$passwordPostgres}';"
     fi    
     read -n 1 -s -r -p "PRESS [ENTER] to continue..."
 }
@@ -50,16 +51,14 @@ backupDb () {
     read -p "Which database do you want to backup? " db
     read -p "Which directory you would use to save the backup? " backupDir
     if [ -d $backupDir ]; then
-        echo ""
+        echo "$password" | sudo -S chmod 755 $backupDir   
+        echo -e "Preparing $db backup\n"
+        echo "Sending backup to $bsckupDir"
+        sudo -u postgres pg_dump -Fc $db > "$backupDir/backup-$db-$date.bak"
     else
-        echo "$backupDir does not exist. Creating $backupDir"
-        sudo mkdir $backupDir
+        echo "$backupDir does not exist. Please create it or select another one"
     fi
 
-    echo "$password" | sudo -S chmod 755 $backupDir   
-    echo -e "Preparing $db backup\n"
-    echo "Sending backup to $bsckupDir"
-    sudo -u postgres pg_dump -Fc $db > "$backupDir/backup-$db-$date.bak"
     read -n 1 -s -r -p "PRESS [ENTER] to continue..."
 }
 
@@ -82,7 +81,7 @@ restoreBackupDb () {
         fi
 
         echo -e "\nRestoring $restoreBackup into $db"
-        sudo pg_restore -Fc -d $db "$backupDir/$restoreBackup"
+        sudo -u postgres pg_restore -Fc -d $db "$backupDir/$restoreBackup"
         echo -e "\nListing databases:"
         sudo -u postgres psql -c "\l"
     else
@@ -122,12 +121,10 @@ do
             ;;
         3)
             backupDb
-            sleep 3
             ;;
          4) 
             # restoreBackup param1 param2
             restoreBackupDb
-            sleep 3
             ;;
          5)
             exitProgram
