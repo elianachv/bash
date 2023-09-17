@@ -3,6 +3,12 @@
 # Autor: Eliana Chavez
 
 option=0
+db=""
+backupDir=""
+restoreBackup=""
+date=$(date +"%Y%m%d%H%S")
+password=""
+passwordPostgres=""
 
 installPostgressAmazonLinux () {
     echo -e "\n Verifying postgres instalation ...."
@@ -35,20 +41,24 @@ uninstallPostgressAmazonLinux () {
 }
 
 backupDb () {
+    echo -e ""
+    read -s -p "Digit sudo password: " password
+    echo -e ""
     echo -e "\nListing databases:"
     sudo -u postgres psql -c "-l"
 
     read -p "Which database do you want to backup? " db
     read -p "Which directory you would use to save the backup? " backupDir
-    if [ -d $backupDir ]; then
-        echo "$sudoPassword" | sudo -S chmod 755 $backupDir
-        echo -e "Preparing $db backup\n"
-        echo "Sending backup to $fileBackup"
-        sudo -u postgres pg_dump -Fc $db > "$backupDir/backup-$db-$date.bak"
-        read -n 1 -s -r -p "PRESS [ENTER] to continue..."
-    else
-        echo "$backupDir does not exist"
+    if ![[ -d $backupDir ]]; then
+        echo "$backupDir does not exist. Creating $backupDir"
+        sudo mkdir $backipDir
     fi
+
+    echo "$password" | sudo -S chmod 755 $backupDir   
+    echo -e "Preparing $db backup\n"
+    echo "Sending backup to $fileBackup"
+    sudo -u postgres pg_dump -Fc $db > "$backupDir/backup-$db-$date.bak"
+    read -n 1 -s -r -p "PRESS [ENTER] to continue..."
 }
 
 restoreBackupDb () {
@@ -75,8 +85,6 @@ restoreBackupDb () {
     sudo -u postgres psql -c "-l"
 
 }
-
-
 
 exitProgram () {
     echo -e "\nThanks for using PGTIL"
