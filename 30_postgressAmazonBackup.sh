@@ -56,7 +56,7 @@ backupDb () {
         echo "Sending backup to $bsckupDir"
         sudo -u postgres pg_dump -Fc $db > "$backupDir/backup-$db-$date.bak"
     else
-        echo "$backupDir does not exist. Please create it or select another one"
+        echo "Directory $backupDir does not exist. Please create it or select another one"
     fi
 
     read -n 1 -s -r -p "PRESS [ENTER] to continue..."
