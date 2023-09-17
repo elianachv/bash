@@ -51,7 +51,7 @@ backupDb () {
     fi
 }
 
-restoreBackup () {
+restoreBackupDb () {
     echo -e "\nListing available backups\n:"
     ls -latr $backupDir
     read -p "Which backup do you want to restore? " restoreBackup
@@ -107,12 +107,12 @@ do
             uninstallPostgressAmazonLinux
             ;;
         3)
-            backupDB
+            backupDb
             sleep 3
             ;;
          4) 
             # restoreBackup param1 param2
-            restoreBackup
+            restoreBackupDb
             sleep 3
             ;;
          5)
